@@ -1,39 +1,61 @@
-Introduction to MLflow
-======================
+Introduction to MLflow for MLOps Part 3: Database Tracking, Minio Artifact Storage, and Registry
+================================================================================================
+
+After following along with the demos in this three part repository you will be able to:
+
+* Understand how you and your Data Science teams can improve your MLOps practices using MLflow
+* Use all Components of MLflow (Tracking, Projects, Models, Registry)
+* Use MLflow in an Anaconda Environment
+* Use MLflow with a Docker Environment (including running an IDE inside of a container)
+* Use Postgres Backend Store and Minio Artifact Store for Easy Collaboration
 
 The instructions/demos below assume you are using a Mac OSX operating system. Other operating systems can be used with minor modifications. 
 
-After following along with the demos below you will be able to:
+|
 
-* Use all Components of MLflow
+Table of Contents:
+==================
+Part 1: Anaconda Environment
+----------------------------
+(Github: https://github.com/Noodle-ai/mlflow_part1_condaEnv)
+(Medium: https://medium.com/p/1fd9e299226f)
 
-  * Tracking
-  * Projects
-  * Models
-  * Registry
-* Use MLflow in an Anaconda Environment
-* Use MLflow with a Docker Environment
+1. What is MLflow and Why Should You Use It?
+2. Using MLflow with a Conda Environment 
 
-  * Develop Code Within a Container
-* Use Non-Local Storage for Easy Collaboration
+Part 2: Docker Environment
+--------------------------
+(Github: https://github.com/Noodle-ai/mlflow_part2_dockerEnv)
+(Medium: https://medium.com/p/53516ce45266)
 
-  * Use a PostgreSQL DB as Tracking URI
-  * Use Minio as an Artifact URI
+1. Using MLflow with a Docker Environment
+
+Part 3: Database Tracking, Minio Artifact Storage, and Registry
+---------------------------------------------------------------
+(Github: https://github.com/Noodle-ai/mlflow_part1_condaEnv)
+(Medium: https://medium.com/p/9fef196aaf42)
+
+1. Running MLflow with a PostgreSQL Database and Minio Artifact Store
+2. MLflow Model Registry
 
 |
 
-4. Running MLflow Tracking with a PostgreSQL Database and Minio Artifact Store
+1. Running MLflow Tracking with a PostgreSQL Database and Minio Artifact Store
 ==============================================================================
-In this section we build on top of the examples in either section 2 or 3 (for the demo below we build on top of section 2). Instead of having a local mlruns folder for storing the information from MLflow Tracking we store the parameters and metrics in a PostgreSQL Database, while storing the artifacts in Minio object storage.
+In this section we build on top of the examples in Part 1: Anaconda Environment. Instead of having a local mlruns folder for storing the information from MLflow Tracking we store the parameters and metrics in a PostgreSQL Database, while storing the artifacts in Minio object storage.
 
-Note: This is the prefered solution to the issue we encountered in section 3 when we observed the absolute path conflict between the container and the local environment in MLflow Tracking. If you plan on sharing the same tracking experiment across devices a DB should be used for the tracking URI. 
+Note: This is the prefered solution to the issue we encountered in Part 2: Docker Environment when we observed the absolute path conflict between the container and the local environment in MLflow Tracking. If you plan on sharing the same tracking experiment across devices a DB should be used for the tracking URI. 
 
 |
 
 Setting Up a PostgreSQL Database Tracking URI and Minio Artifact URI
--------------------------------------------------------------------
+--------------------------------------------------------------------
 
-1. Follow the setup instructions in section 2
+1. Follow the setup instructions in Part 1: Anaconda Environment (https://github.com/Noodle-ai/mlflow_part1_condaEnv) but instead of cloning the part 1 repository clone the part 3 repository
+
+.. code-block:: bash
+
+  git clone https://github.com/Noodle-ai/mlflow_part3_PostgresMinioRegistry.git
 
 2. Install PostgreSQL
 
@@ -71,7 +93,7 @@ Setting Up a PostgreSQL Database Tracking URI and Minio Artifact URI
 
   CREATE DATABASE mlflow_db;
 
-8. Verify the new Database was created (in psql command line)
+8. Verify the New Database was created (in psql command line)
 
 .. code-block:: bash
 
@@ -126,21 +148,21 @@ Minio uses port 9000 by default but if that port is already in use you can chang
 Examples
 --------
 
-Open experiment_psql_uri.ipynb in the conda_env folder and follow along. This is identical to the notebook in section 2 (experiment.ipynb) except that it uses a PostgreSQL DB as the tracking URI and Minio as the artifact URI.
+Open experiment.ipynb and follow along. This is identical to the notebook in Part 1: Anaconda Environment except that it uses a PostgreSQL DB as the tracking URI and Minio as the artifact URI.
 
 |
 
 Using the Tracking API
 ^^^^^^^^^^^^^^^^^^^^^^
 
-For more detailed information on using the tracking API look at the "Using the Tracking API" subsection of section 2.
+For more detailed information on using the tracking API look at the "Using the Tracking API" subsection of Part 1: Anaconda Environment.
 
 In order to use a PostgreSQL DB we must set a new tracking URI that uses the PostgreSQL DB we configured above. The database is encoded as <dialect>+<driver>://<username>:<password>@<host>:<port>/<database>. We also must set the S3 endpoint URL with the URL returned when we spun up our Minio UI. Lastly our environment must know the access key and secret access key.
 
 .. code-block:: python
 
   os.environ['MLFLOW_TRACKING_URI'] = 'postgresql+psycopg2://db_user:123@localhost/mlflow_db'
-  os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'http://192.168.86.62:9001'
+  os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'http://192.168.86.64:9001'
   os.environ['AWS_ACCESS_KEY_ID'] = 'minioadmin'
   os.environ['AWS_SECRET_ACCESS_KEY'] = 'minioadmin'
 
@@ -157,14 +179,14 @@ We create a new experiment setting the artifact location to be the "mlflow" buck
 Viewing the Tracking UI
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-For more detailed information on viewing the tracking API look at the "Viewing the Tracking UI" subsection of section 2.
+For more detailed information on viewing the tracking API look at the "Viewing the Tracking UI" subsection of Part 1: Anaconda Environment.
 
 We have configured MLflow to use a PostgreSQL DB for tracking. Because of this we must use the "--backend-store-uri" argument to tell MLflow where to find the experiments. We must set our environment variables in the terminal before opening the MLflow UI (similar to above in the notebook).
 
 .. code-block:: bash
 
   export MLFLOW_TRACKING_URI=postgresql+psycopg2://db_user:123@localhost/mlflow_db
-  export MLFLOW_S3_ENDPOINT_URL=http://192.168.86.62:9001
+  export MLFLOW_S3_ENDPOINT_URL=http://192.168.86.64:9001
   export AWS_ACCESS_KEY_ID=minioadmin
   export AWS_SECRET_ACCESS_KEY=minioadmin
   mlflow ui --backend-store-uri 'postgresql+psycopg2://db_user:123@localhost/mlflow_db'
@@ -186,41 +208,41 @@ After a model has been saved using MLflow Models within MLflow Tracking you can 
 Packaging the Training Code in a Conda Environment with MLflow Projects
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For more detailed information on Packaging with MLflow Projects look at the "Packaging the Training Code in a Conda Environment with MLflow Projects" subsection of section 2.
+For more detailed information on Packaging with MLflow Projects look at the "Packaging the Training Code in a Conda Environment with MLflow Projects" subsection of Part 1: Anaconda Environment.
 
-To run this project use mlflow run on the folder containing the MLproject file (the following command assumes you are in the conda_env folder). To designate the correct experiment use the --experiment-name argument. We must set our environment variables in the terminal before running the command. 
-
-.. code-block:: bash
-
-  export MLFLOW_TRACKING_URI=postgresql+psycopg2://db_user:123@localhost/mlflow_db
-  export MLFLOW_S3_ENDPOINT_URL=http://192.168.86.62:9001
-  export AWS_ACCESS_KEY_ID=minioadmin
-  export AWS_SECRET_ACCESS_KEY=minioadmin
-  mlflow run ../conda_env -P alpha=1.0 -P l1_ratio=1.0 --experiment-name exp
-
-If a repository has an MLproject file you can also run a project directly from GitHub. This tutorial lives in the https://bitbucket.org/noodleai/mlflow_demos repository which you can run with the following command. The symbol "#" is used to move into a subdirectory of the repo. The "--version" argument can be used to run code from a different branch. To designate the correct experiment use the --experiment-name argument. You will need to type your username into the below command. We must set our environment variables in the terminal before running the command.
+To run this project use mlflow run on the folder containing the MLproject file. To designate the correct experiment use the --experiment-name argument. We must set our environment variables in the terminal before running the command. 
 
 .. code-block:: bash
 
   export MLFLOW_TRACKING_URI=postgresql+psycopg2://db_user:123@localhost/mlflow_db
-  export MLFLOW_S3_ENDPOINT_URL=http://192.168.86.62:9001
+  export MLFLOW_S3_ENDPOINT_URL=http://192.168.86.64:9001
   export AWS_ACCESS_KEY_ID=minioadmin
   export AWS_SECRET_ACCESS_KEY=minioadmin
-  mlflow run https://<username>@bitbucket.org/noodleai/mlflow_demos.git#conda_env -P alpha=1.0 -P l1_ratio=0.8 --experiment-name exp
+  mlflow run . -P alpha=1.0 -P l1_ratio=1.0 --experiment-name exp
+
+If a repository has an MLproject file you can also run a project directly from GitHub. This tutorial lives in the https://github.com/Noodle-ai/mlflow_part3_PostgresMinioRegistry repository which you can run with the following command. The symbol "#" can be used to move into a subdirectory of the repo. The "--version" argument can be used to run code from a different branch. To designate the correct experiment use the --experiment-name argument. You will need to type your username into the below command. We must set our environment variables in the terminal before running the command.
+
+.. code-block:: bash
+
+  export MLFLOW_TRACKING_URI=postgresql+psycopg2://db_user:123@localhost/mlflow_db
+  export MLFLOW_S3_ENDPOINT_URL=http://192.168.86.64:9001
+  export AWS_ACCESS_KEY_ID=minioadmin
+  export AWS_SECRET_ACCESS_KEY=minioadmin
+  mlflow run https://github.com/Noodle-ai/mlflow_part3_PostgresMinioRegistry -P alpha=1.0 -P l1_ratio=0.8 --experiment-name exp
 
 |
 
 Serving the Model
 ^^^^^^^^^^^^^^^^^
 
-For more detailed information on serving the model look at the "Serving the Model" subsection of section 2.
+For more detailed information on serving the model look at the "Serving the Model" subsection of Part 1: Anaconda Environment.
 
 We must set our environment variables in the terminal before running the command. To deploy the server, run the following commands. 
 
 .. code-block:: bash
 
   export MLFLOW_TRACKING_URI=postgresql+psycopg2://db_user:123@localhost/mlflow_db
-  export MLFLOW_S3_ENDPOINT_URL=http://192.168.86.62:9001
+  export MLFLOW_S3_ENDPOINT_URL=http://192.168.86.64:9001
   export AWS_ACCESS_KEY_ID=minioadmin
   export AWS_SECRET_ACCESS_KEY=minioadmin
   mlflow models serve -m s3://mlflow/<run_id>/artifacts/model -p 1234
@@ -239,7 +261,7 @@ The server should respond with output similar to:
 
 |
 
-5. MLflow Model Registry
+2. MLflow Model Registry
 ========================
 The MLflow Model Registry is a centralized model store, set of APIs, and UI, to collaboratively manage the full lifecycle of an MLflow model. It provides model lineage (which MLflow experiment and run produced the model), model versioning, stage transitions (for example from staging to production), and annotations. 
 
@@ -248,16 +270,12 @@ The MLflow Model Registry is a centralized model store, set of APIs, and UI, to 
 Setting Up For Model Registry Example
 -------------------------------------
 
-1. Follow setup instructions for section 2 (Using MLflow with a Conda Env) 
-
-2. Follow setup instructions for section 4 (Setting Up a PostgreSQL Database Tracking URI and Minio Artifact URI)
-
-3. Follow the instructions in section 4 at least up through the "Viewing the Tracking UI" subsection. This creates MLflow Tracking runs stored in PostgreSQL tracking URI and Minio artifact URI, then opens the UI for viewing.
+Follow the instructions above in the "Running MLflow Tracking with a PostgreSQL Database and Minio Artifact Store" section at least up through the "Viewing the Tracking UI" subsection. This creates MLflow Tracking runs stored in PostgreSQL tracking URI and Minio artifact URI, then opens the UI for viewing.
 
 |
 
-Concepts
---------
+Basic Concepts
+--------------
 
 |
 
