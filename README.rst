@@ -441,18 +441,18 @@ First, you can use the mlflow.<model_flavor>.log_model() method by populating th
 
 If a registered model with the name doesn't exist, the method registers a new model, creates Version 1, and returns a ModelVersion MLflow object. If a registered model with the name exists already, the method creates a new model version and returns the version object.
 
-The second way is to use the "mlflow.register_model()" method, after all your experiment runs complete and when you have decided which model is the most suitable to add to the registry. For this method, you will need the "run_id" as part of the "runs:URI" argument.
+The second way is to use the "mlflow.register_model()" method, after all your experiment runs complete and when you have decided which model is the most suitable to add to the registry. For this method, you will need the "run_id" as part of the URI argument.
 
 .. code-block:: python
 
   result = mlflow.register_model(
-    model_uri="s3://mlflow/<run_id>/artifacts/model",
+    model_uri="runs:/<run_id>/artifacts/model",
     name="ElasticnetWineModel"
   )
 
 If a registered model with the name doesn't exist, the method registers a new model, creates Version 1, and returns a ModelVersion MLflow object. If a registered model with the name exists already, the method creates a new model version and returns the version object.
 
-And finally, you can use the "create_registered_model()" to create a new registered model. If the model name exists, this method will throw an mlflowException because creating a new registered model requires a unique name.
+And finally, you can use the "create_registered_model()" method to create a new registered model. If the model name exists, this method will throw an mlflowException because creating a new registered model requires a unique name.
 
 .. code-block:: python
 
@@ -508,7 +508,7 @@ As well as adding or updating a description of a specific version of the model, 
 Transitioning an MLflow Model's Stage
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Over the course of the model's lifecycle, a model evolves-from development to staging to production. You can transition a registered model to one of the stages: Staging, Production, or Archived.
+Over the course of the model's lifecycle, a model evolves - from development to staging to production. You can transition a registered model to one of the stages: Staging, Production, or Archived.
 
 .. code-block:: python
 
