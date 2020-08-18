@@ -337,7 +337,7 @@ UI Workflow
 
 |
 
-3. In the "Model Name" field, if you are adding a new model, specify a unique name to identify the model. If you are registering a new version to an existing model, pick the existing model name from the dropdown. 
+3. If you are adding a new model, specify a unique name to identify the model. If you are registering a new version to an existing model, pick the existing model name from the dropdown. 
 
 |
 
@@ -348,16 +348,7 @@ UI Workflow
 
 Once the model is added to the Model Registry you can:
 
-* Navigate to the "Registered Models" page and view the model properties.
-
-|
-
-.. image:: screenshots/registered_models_page.png
-  :width: 600
-
-|
-
-* Go to the Artifacts section of the run detail page, click the model, and then click the model version at the top right to view the version you just created. 
+* Go to the Artifacts section of the run detail page, click the model, and then click the model version at the top right to view the version you created.
 
 |
 
@@ -366,16 +357,7 @@ Once the model is added to the Model Registry you can:
 
 |
 
-Each model has an overview page that shows the active versions.
-
-|
-
-.. image:: screenshots/model_overview_page.png
-  :width: 600
-
-|
-
-Click a version to navigate to the version detail page. 
+* This opens the "version detail" page where you can see model version details and the current stage of the model version.
 
 |
 
@@ -384,12 +366,34 @@ Click a version to navigate to the version detail page.
 
 |
 
-On the version detail page you can see model version details and the current stage of the model version. Click the "Stage" drop-down at the top right, to transition the model version to one of the other valid stages. 
+* Click the "Stage" drop-down at the top right to transition the model version to one of the other valid stages.
 
 |
 
 .. image:: screenshots/stage_transitions.png
   :width: 600
+
+|
+
+* From the "version detail" page you can navigate to the "Registered Models" page and view the model properties by clicking "Registered Models" in the top left.
+
+| 
+
+.. image:: screenshots/registered_models_page.png
+  :width: 600
+
+|
+
+* You can click on one of the listed model names in the "Registered Models" page to open the "model overview" page that lists the active versions.
+
+|
+
+.. image:: screenshots/model_overview_page.png
+  :width: 600
+
+|
+
+* You can then navigate back to the "version detail" page by clicking a model version on the "model overview" page.
 
 |
 
@@ -403,7 +407,7 @@ Adding an MLflow Model to the Model Registry
 
 There are three programmatic ways to add a model to the registry.
 
-First, you can use the mlflow.<model_flavor>.log_model() method.
+First, you can use the mlflow.<model_flavor>.log_model() method by populating the registered_model_name input. 
 
 .. code-block:: python
 
@@ -422,13 +426,14 @@ First, you can use the mlflow.<model_flavor>.log_model() method.
       print("  MAE: %s" % mae)
       print("  R2: %s" % r2)
 
-      # Log parameter, metrics, and model to MLflow
+      # Log parameter, and metrics
       mlflow.log_param("alpha", alpha)
       mlflow.log_param("l1_ratio", l1_ratio)
       mlflow.log_metric("rmse", rmse)
       mlflow.log_metric("r2", r2)
       mlflow.log_metric("mae", mae)
 
+      # Log model and register
       mlflow.sklearn.log_model(sk_model=lr, 
                                artifact_path = "model",
                                registered_model_name="ElasticnetWineModel"
