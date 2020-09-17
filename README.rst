@@ -493,7 +493,7 @@ At any point in a model's lifecycle development, you can update a model version'
 Renaming an MLflow Model
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-As well as adding or updating a description of a specific version of the model, you can rename an existing registered model using "rename_registered_model()".
+In addition to adding or updating a description of a specific version of the model, you can rename an existing registered model using "rename_registered_model()".
 
 .. code-block:: python
 
