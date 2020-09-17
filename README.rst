@@ -1,7 +1,7 @@
 Introduction to MLflow for MLOps Part 3: Database Tracking, Minio Artifact Storage, and Registry
 ================================================================================================
 
-After following along with the demos in this three part repository you will be able to:
+After following along with the demos in this three-part repository you will be able to:
 
 * Understand how you and your Data Science teams can improve your MLOps practices using MLflow
 * Use all Components of MLflow (Tracking, Projects, Models, Registry)
@@ -42,16 +42,16 @@ Part 3: Database Tracking, Minio Artifact Storage, and Registry
 
 1. Running MLflow Tracking with a PostgreSQL Database and Minio Artifact Store
 ==============================================================================
-In this section we build on top of the examples in Part 1: Anaconda Environment. Instead of having a local mlruns folder for storing the information from MLflow Tracking we store the parameters and metrics in a PostgreSQL Database, while storing the artifacts in Minio object storage.
+In this section we build on top of the examples in Part 1: Anaconda Environment. Instead of having a local mlruns folder for storing the information from MLflow Tracking, we store the parameters and metrics in a PostgreSQL Database, while storing the artifacts in Minio object storage.
 
-Note: This is the prefered solution to the issue we encountered in Part 2: Docker Environment when we observed the absolute path conflict between the container and the local environment in MLflow Tracking. If you plan on sharing the same tracking experiment across devices a DB should be used for the tracking URI. 
+Note: This is the preferred solution to the issue we encountered in Part 2: Docker Environment, when we observed the absolute path conflict between the container and the local environment in MLflow Tracking. If you plan on sharing the same tracking experiment across devices a DB should be used for the tracking URI. 
 
 |
 
 Setting Up a PostgreSQL Database Tracking URI and Minio Artifact URI
 --------------------------------------------------------------------
 
-1. Follow the setup instructions in Part 1: Anaconda Environment (https://github.com/Noodle-ai/mlflow_part1_condaEnv) but instead of cloning the part 1 repository clone the part 3 repository
+1. Follow the setup instructions in Part 1: Anaconda Environment (https://github.com/Noodle-ai/mlflow_part1_condaEnv) but instead of cloning the Part 1 repository, clone the Part 3 repository.
 
 .. code-block:: bash
 
@@ -63,13 +63,13 @@ Setting Up a PostgreSQL Database Tracking URI and Minio Artifact URI
 
   brew install postgresql
 
-3. Verify that PostgreSQL is Installed and Running
+3. Verify that PostgreSQL is installed and running
 
 .. code-block:: bash
 
   postgres -V
 
-4. Open PSQL Command Line
+4. Open PSQL command line
 
 .. code-block:: bash
 
@@ -81,7 +81,7 @@ Setting Up a PostgreSQL Database Tracking URI and Minio Artifact URI
 
   CREATE ROLE db_user WITH LOGIN PASSWORD '123';
 
-6. Verify the New DB User (in psql command line)
+6. Verify the new DB User (in psql command line)
 
 .. code-block:: bash
 
@@ -99,7 +99,7 @@ Setting Up a PostgreSQL Database Tracking URI and Minio Artifact URI
 
   \list
 
-9. Grant the User Access to the Database (in psql command line)
+9. Grant the User access to the Database (in psql command line)
 
 .. code-block:: bash
 
@@ -119,13 +119,13 @@ Setting Up a PostgreSQL Database Tracking URI and Minio Artifact URI
 
 12. Open Minio UI
 
-Minio uses port 9000 by default but if that port is already in use you can change it by using the "--address" argument.
+Minio uses "port 9000" by default but if that port is already in use you can change it by using the "--address" argument.
 
 .. code-block:: bash
 
   minio server /data --address ":9001"
 
-13. Open a Browser Access URL Returned by the Previous Command And Login Using the "AccessKey" and "SecretKey"
+13. Open a Browser Access URL returned by the previous command And login using the "Access Key" and "Secret Key".
 
 |
 
@@ -134,9 +134,9 @@ Minio uses port 9000 by default but if that port is already in use you can chang
 
 |
 
-14. Change the AccessKey and SecretKey if Desired
+14. Change the Access Key and Secret Key, if desired.
 
-15. From the Minio UI Create a "mlflow" bucket by clicking on the "create bucket" button in the bottom right corner
+15. From the Minio UI, create an "mlflow" bucket by clicking on the "create bucket" button in the bottom right corner.
 
 |
 
@@ -157,7 +157,7 @@ Using the Tracking API
 
 For more detailed information on using the tracking API look at the "Using the Tracking API" subsection of Part 1: Anaconda Environment.
 
-In order to use a PostgreSQL DB we must set a new tracking URI that uses the PostgreSQL DB we configured above. The database is encoded as <dialect>+<driver>://<username>:<password>@<host>:<port>/<database>. We also must set the S3 endpoint URL with the URL returned when we spun up our Minio UI. Lastly our environment must know the access key and secret access key.
+In order to use a PostgreSQL DB, we must set a new tracking URI that uses the PostgreSQL DB we configured above. The database is encoded as: <dialect>+<driver>://<username>:<password>@<host>:<port>/<database>. We also must set the S3 endpoint URL with the URL returned when we spun up our Minio UI. Lastly, our environment must know the Access Key and Secret Key.
 
 .. code-block:: python
 
@@ -167,7 +167,7 @@ In order to use a PostgreSQL DB we must set a new tracking URI that uses the Pos
   os.environ['AWS_SECRET_ACCESS_KEY'] = 'minioadmin'
 
 
-We create a new experiment setting the artifact location to be the "mlflow" bucket we created in the Minio UI (Note: an experiment can only be created once). We then set this as our current experiment.
+We create a new experiment, setting the artifact location to be the "mlflow" bucket we created in the Minio UI (Note: an experiment can only be created once). We then set this as our current experiment.
 
 .. code-block:: python
 
@@ -179,7 +179,7 @@ We create a new experiment setting the artifact location to be the "mlflow" buck
 Viewing the Tracking UI
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-For more detailed information on viewing the tracking API look at the "Viewing the Tracking UI" subsection of Part 1: Anaconda Environment.
+For more detailed information on viewing the tracking API, look at the "Viewing the Tracking UI" subsection of Part 1: Anaconda Environment.
 
 We have configured MLflow to use a PostgreSQL DB for tracking. Because of this we must use the "--backend-store-uri" argument to tell MLflow where to find the experiments. We must set our environment variables in the terminal before opening the MLflow UI (similar to above in the notebook).
 
@@ -196,7 +196,7 @@ We have configured MLflow to use a PostgreSQL DB for tracking. Because of this w
 Loading a Saved Model
 ^^^^^^^^^^^^^^^^^^^^^
 
-After a model has been saved using MLflow Models within MLflow Tracking you can easily load the model in a variety of flavors (python_function, sklearn, etc.). We need to choose a model from the mlflow bucket in Minio.
+After a model has been saved using MLflow Models within MLflow Tracking, you can easily load the model in a variety of flavors (python_function, sklearn, etc.). We need to choose a model from the mlflow bucket in Minio.
 
 .. code-block:: python
 
@@ -210,7 +210,7 @@ Packaging the Training Code in a Conda Environment with MLflow Projects
 
 For more detailed information on Packaging with MLflow Projects look at the "Packaging the Training Code in a Conda Environment with MLflow Projects" subsection of Part 1: Anaconda Environment.
 
-To run this project use mlflow run on the folder containing the MLproject file. To designate the correct experiment use the --experiment-name argument. We must set our environment variables in the terminal before running the command. 
+To run this project use mlflow run on the folder containing the MLproject file. To designate the correct experiment, use the --experiment-name argument. We must set our environment variables in the terminal before running the command. 
 
 .. code-block:: bash
 
@@ -237,7 +237,7 @@ Serving the Model
 
 For more detailed information on serving the model look at the "Serving the Model" subsection of Part 1: Anaconda Environment.
 
-We must set our environment variables in the terminal before running the command. To deploy the server, run the following commands. 
+We must set our environment variables in the terminal before running the command. To deploy the server, run the following commands:
 
 .. code-block:: bash
 
@@ -310,7 +310,7 @@ Each distinct model version can be assigned one stage at any given time. MLflow 
 Annotations and Descriptions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can annotate the top-level model and each version individually using Markdown, including description and any relevant information useful for the team such as algorithm descriptions, dataset employed, or methodology. 
+You can annotate the top-level model and each version individually using Markdown; including description and any relevant information useful for the team such as algorithm descriptions, dataset employed, or methodology. 
 
 |
 
@@ -348,7 +348,7 @@ UI Workflow
 
 Once the model is added to the Model Registry you can:
 
-* Go to the Artifacts section of the run detail page, click the model, and then click the model version at the top right to view the version you created.
+* Go to the "Artifacts" section of the run detail page, click the model, and then click the model version at the top right to view the version you created.
 
 |
 
@@ -508,7 +508,7 @@ As well as adding or updating a description of a specific version of the model, 
 Transitioning an MLflow Model's Stage
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Over the course of the model's lifecycle, a model evolves - from development to staging to production. You can transition a registered model to one of the stages: Staging, Production, or Archived.
+Over the course of the model's lifecycle, a model evolves - from development, to staging, to production. You can transition a registered model to one of the stages: Staging, Production, or Archived.
 
 .. code-block:: python
 
